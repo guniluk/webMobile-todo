@@ -1,28 +1,35 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { ThemeProvider, useTheme } from "../hooks/useTheme";
+
+function RootLayoutContent() {
+  const { colors } = useTheme();
+
+  return (
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      edges={["top", "left", "right"]}
+    >
+      <StatusBar style={colors.statusBar} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </SafeAreaView>
+  );
+}
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
-      <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <Stack
-          screenOptions={{
-            headerShown: true,
-          }}
-        >
-          <Stack.Screen
-            name="index"
-            options={{ headerShown: false, title: "Home" }}
-          />
-          <Stack.Screen name="about" options={{ title: "About page" }} />
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false, title: "Tabs" }}
-          />
-        </Stack>
-      </SafeAreaView>
+      <ThemeProvider>
+        <RootLayoutContent />
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

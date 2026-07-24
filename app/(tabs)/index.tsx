@@ -1,55 +1,73 @@
-import { useRouter } from "expo-router";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Sun, Moon } from "lucide-react-native";
+import { useTheme } from "../../hooks/useTheme";
 
-const Index = () => {
-  const router = useRouter();
-
-  const handleGoToAppIndex = () => {
-    if (router.canGoBack()) {
-      // Stack 상위에 있는 Root app/index.tsx로 스택을 정리하며 돌아감
-      router.dismissAll();
-    } else {
-      // 스택 기록이 없을 경우 Root index로 replace 이동
-      router.replace("/");
-    }
-  };
+export default function HomeScreen() {
+  const { isDark, toggleTheme, colors } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>index in tabs</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Top Header Section */}
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Todos</Text>
+        <TouchableOpacity
+          onPress={toggleTheme}
+          style={[styles.themeButton, { backgroundColor: colors.surface }]}
+          activeOpacity={0.7}
+          accessibilityLabel="Toggle Theme"
+        >
+          {isDark ? (
+            <Sun color={colors.warning} size={22} />
+          ) : (
+            <Moon color={colors.text} size={22} />
+          )}
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleGoToAppIndex}>
-        <Text style={styles.buttonText}>Go to app/index</Text>
-      </TouchableOpacity>
+      {/* Content Section */}
+      <View style={styles.contentContainer}>
+        <Text style={[styles.content, { color: colors.text }]}>
+          {isDark ? "Dark Mode Active 🌙" : "Light Mode Active ☀️"}
+        </Text>
+      </View>
     </View>
   );
-};
-
-export default Index;
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  themeButton: {
+    padding: 10,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  title: {
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  content: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
     fontWeight: "600",
   },
 });
