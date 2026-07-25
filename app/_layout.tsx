@@ -1,7 +1,12 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { ThemeProvider, useTheme } from "../hooks/useTheme";
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeProvider, useTheme } from '../hooks/useTheme';
+
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+  unsavedChangesWarning: false,
+});
 
 function RootLayoutContent() {
   const { colors } = useTheme();
@@ -9,7 +14,7 @@ function RootLayoutContent() {
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: colors.background }}
-      edges={["top", "left", "right"]}
+      edges={['top', 'left', 'right']}
     >
       <StatusBar style={colors.statusBar} />
       <Stack
@@ -27,9 +32,11 @@ function RootLayoutContent() {
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <RootLayoutContent />
-      </ThemeProvider>
+      <ConvexProvider client={convex}>
+        <ThemeProvider>
+          <RootLayoutContent />
+        </ThemeProvider>
+      </ConvexProvider>
     </SafeAreaProvider>
   );
 }
