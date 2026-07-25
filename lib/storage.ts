@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * AsyncStorage 유틸리티 래퍼
@@ -47,7 +47,7 @@ export const storage = {
     try {
       await AsyncStorage.clear();
     } catch (error) {
-      console.error("[AsyncStorage] 전체 데이터 초기화 실패:", error);
+      console.error('[AsyncStorage] 전체 데이터 초기화 실패:', error);
     }
   },
 };

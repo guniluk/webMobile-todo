@@ -14,29 +14,34 @@ export function useFilteredTodos(
       };
     }
 
+    const lowerSearch = searchText.trim().toLowerCase();
+    const searchMatchedTodos: TodoItemData[] = [];
     let completed = 0;
-    const lowerSearch = searchText.toLowerCase();
-    const filteredTodos: TodoItemData[] = [];
 
     for (let i = 0; i < todos.length; i++) {
       const todo = todos[i];
-      if (todo.isCompleted) completed++;
 
+      //if filter is null or undefined, return all todos, and if any, filter by search text and return search result
       const matchesSearch =
         !lowerSearch || todo.text.toLowerCase().includes(lowerSearch);
-      const matchesFilter =
-        filter === 'all' ||
-        (filter === 'active' && !todo.isCompleted) ||
-        (filter === 'completed' && todo.isCompleted);
 
-      if (matchesSearch && matchesFilter) {
-        filteredTodos.push(todo);
+      if (matchesSearch) {
+        searchMatchedTodos.push(todo);
+        if (todo.isCompleted) {
+          completed++;
+        }
       }
     }
 
-    const total = todos.length;
+    const total = searchMatchedTodos.length;
     const active = total - completed;
     const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    const filteredTodos = searchMatchedTodos.filter((todo) => {
+      if (filter === 'active') return !todo.isCompleted;
+      if (filter === 'completed') return todo.isCompleted;
+      return true;
+    });
 
     return {
       filteredTodos,

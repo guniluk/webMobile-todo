@@ -73,8 +73,10 @@ interface ThemeContextType {
   toggleTheme: () => void;
 }
 
+//! 1: createContext
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+//! 2: ThemeProvider
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const systemColorScheme = useSystemColorScheme() ?? 'light';
   const [themeMode, setThemeModeState] = useState<ThemeMode>('system');
@@ -146,10 +148,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+//! 3: useTheme
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
-  const systemColorScheme = useSystemColorScheme() ?? 'light';
 
+  const systemColorScheme = useSystemColorScheme() ?? 'light';
   if (!context) {
     const isDark = systemColorScheme === 'dark';
     return {

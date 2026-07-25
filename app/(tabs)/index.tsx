@@ -31,7 +31,9 @@ export default function HomeScreen() {
   const { colors } = useTheme();
 
   // Convex Queries & Mutations
+  //! useQuery is executed by below code
   const todos = useQuery(api.todos.getTodos) as TodoItemData[] | undefined;
+
   const addTodo = useMutation(api.todos.addTodo);
   const toggleTodo = useMutation(api.todos.toggleTodo);
   const updateTodo = useMutation(api.todos.updateTodo);
@@ -41,7 +43,10 @@ export default function HomeScreen() {
   const [inputText, setInputText] = useState('');
   const [searchText, setSearchText] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
-  const [editingTodo, setEditingTodo] = useState<{ id: Id<'todos'>; text: string } | null>(null);
+  const [editingTodo, setEditingTodo] = useState<{
+    id: Id<'todos'>;
+    text: string;
+  } | null>(null);
   const [editText, setEditText] = useState('');
 
   // Single pass Filter & Stats Hook
@@ -61,32 +66,40 @@ export default function HomeScreen() {
     }
   }, [inputText, addTodo]);
 
-  const handleToggle = useCallback(async (id: Id<'todos'>) => {
-    try {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      await toggleTodo({ id });
-    } catch (error) {
-      console.error('Failed to toggle todo:', error);
-    }
-  }, [toggleTodo]);
+  const handleToggle = useCallback(
+    async (id: Id<'todos'>) => {
+      try {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        await toggleTodo({ id });
+      } catch (error) {
+        console.error('Failed to toggle todo:', error);
+      }
+    },
+    [toggleTodo],
+  );
 
-  const handleDelete = useCallback((id: Id<'todos'>) => {
-    Alert.alert('삭제 확인', '이 할 일을 삭제하시겠습니까?', [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-            await deleteTodo({ id });
-          } catch (error) {
-            console.error('Failed to delete todo:', error);
-          }
+  const handleDelete = useCallback(
+    (id: Id<'todos'>) => {
+      Alert.alert('삭제 확인', '이 할 일을 삭제하시겠습니까?', [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Warning,
+              );
+              await deleteTodo({ id });
+            } catch (error) {
+              console.error('Failed to delete todo:', error);
+            }
+          },
         },
-      },
-    ]);
-  }, [deleteTodo]);
+      ]);
+    },
+    [deleteTodo],
+  );
 
   const openEditModal = useCallback((id: Id<'todos'>, currentText: string) => {
     Haptics.selectionAsync();
@@ -118,7 +131,7 @@ export default function HomeScreen() {
         onDelete={handleDelete}
       />
     ),
-    [handleToggle, openEditModal, handleDelete]
+    [handleToggle, openEditModal, handleDelete],
   );
 
   return (

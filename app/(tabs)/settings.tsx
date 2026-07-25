@@ -24,7 +24,9 @@ const SettingsScreen = () => {
   const { colors, themeMode, setThemeMode } = useTheme();
 
   // Convex Queries & Mutations
+  //! useQuery is executed right away when this screen is loaded. so you can use todos variable without loading check
   const todos = useQuery(api.todos.getTodos);
+
   const clearAllTodos = useMutation(api.todos.clearAllTodos);
 
   // Compute Stats
@@ -56,20 +58,23 @@ const SettingsScreen = () => {
             try {
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
               const result = await clearAllTodos({});
-              Alert.alert('완료', `${result.deletedCount}개의 할 일이 모두 삭제되었습니다.`);
+              Alert.alert(
+                '완료',
+                `${result.deletedCount}개의 할 일이 모두 삭제되었습니다.`,
+              );
             } catch (error) {
               console.error('Failed to clear all todos:', error);
               Alert.alert('오류', '데이터 삭제에 실패했습니다.');
             }
           },
         },
-      ]
+      ],
     );
   };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>설정</Text>
+      <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
 
       {/* Progress Stats 블럭 (상단 위치) */}
       <View
@@ -79,47 +84,97 @@ const SettingsScreen = () => {
         ]}
       >
         <View style={styles.statsCardHeader}>
-          <BarChart2 size={20} color={colors.primary} style={{ marginRight: 8 }} />
-          <Text style={[styles.statsCardTitle, { color: colors.text }]}>Progress Stats</Text>
+          <BarChart2
+            size={20}
+            color={colors.primary}
+            style={{ marginRight: 8 }}
+          />
+          <Text style={[styles.statsCardTitle, { color: colors.text }]}>
+            Progress Stats
+          </Text>
         </View>
 
         {/* 3가지 핵심 지표 그리드 */}
         <View style={styles.metricsGrid}>
           {/* Total Todos */}
-          <View style={[styles.metricBox, { backgroundColor: colors.background }]}>
-            <View style={[styles.iconCircle, { backgroundColor: colors.primaryLight }]}>
+          <View
+            style={[styles.metricBox, { backgroundColor: colors.background }]}
+          >
+            <View
+              style={[
+                styles.iconCircle,
+                { backgroundColor: colors.primaryLight },
+              ]}
+            >
               <ListTodo size={18} color={colors.primary} />
             </View>
-            <Text style={[styles.metricValue, { color: colors.text }]}>{stats.total}</Text>
-            <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>Total Todos</Text>
+            <Text style={[styles.metricValue, { color: colors.text }]}>
+              {stats.total}
+            </Text>
+            <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>
+              Total Todos
+            </Text>
           </View>
 
           {/* Active */}
-          <View style={[styles.metricBox, { backgroundColor: colors.background }]}>
-            <View style={[styles.iconCircle, { backgroundColor: colors.warning + '20' }]}>
+          <View
+            style={[styles.metricBox, { backgroundColor: colors.background }]}
+          >
+            <View
+              style={[
+                styles.iconCircle,
+                { backgroundColor: colors.warning + '20' },
+              ]}
+            >
               <Clock size={18} color={colors.warning} />
             </View>
-            <Text style={[styles.metricValue, { color: colors.text }]}>{stats.active}</Text>
-            <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>Active</Text>
+            <Text style={[styles.metricValue, { color: colors.text }]}>
+              {stats.active}
+            </Text>
+            <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>
+              Active
+            </Text>
           </View>
 
           {/* Completed */}
-          <View style={[styles.metricBox, { backgroundColor: colors.background }]}>
-            <View style={[styles.iconCircle, { backgroundColor: colors.success + '20' }]}>
+          <View
+            style={[styles.metricBox, { backgroundColor: colors.background }]}
+          >
+            <View
+              style={[
+                styles.iconCircle,
+                { backgroundColor: colors.success + '20' },
+              ]}
+            >
               <CheckCircle2 size={18} color={colors.success} />
             </View>
-            <Text style={[styles.metricValue, { color: colors.text }]}>{stats.completed}</Text>
-            <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>Completed</Text>
+            <Text style={[styles.metricValue, { color: colors.text }]}>
+              {stats.completed}
+            </Text>
+            <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>
+              Completed
+            </Text>
           </View>
         </View>
 
         {/* Progress Bar & Percent Footer */}
         <View style={styles.progressFooter}>
           <View style={styles.progressLabelRow}>
-            <Text style={[styles.progressText, { color: colors.textSecondary }]}>달성률</Text>
-            <Text style={[styles.percentText, { color: colors.primary }]}>{stats.percent}%</Text>
+            <Text
+              style={[styles.progressText, { color: colors.textSecondary }]}
+            >
+              Completion Rate
+            </Text>
+            <Text style={[styles.percentText, { color: colors.primary }]}>
+              {stats.percent}%
+            </Text>
           </View>
-          <View style={[styles.progressBarTrack, { backgroundColor: colors.border }]}>
+          <View
+            style={[
+              styles.progressBarTrack,
+              { backgroundColor: colors.border },
+            ]}
+          >
             <View
               style={[
                 styles.progressBarFill,
@@ -138,7 +193,7 @@ const SettingsScreen = () => {
         ]}
       >
         <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-          테마 설정
+          Theme Settings
         </Text>
         <View style={styles.optionsContainer}>
           {THEME_OPTIONS.map((option) => {
@@ -181,12 +236,22 @@ const SettingsScreen = () => {
       </View>
 
       {/* Danger Zone (위험 구역) 섹션 */}
-      <View style={[styles.dangerSection, { borderColor: colors.error + '40' }]}>
+      <View
+        style={[styles.dangerSection, { borderColor: colors.error + '40' }]}
+      >
         <View style={styles.dangerHeader}>
-          <AlertTriangle size={20} color={colors.error} style={{ marginRight: 8 }} />
-          <Text style={[styles.dangerTitle, { color: colors.error }]}>Danger Zone</Text>
+          <AlertTriangle
+            size={20}
+            color={colors.error}
+            style={{ marginRight: 8 }}
+          />
+          <Text style={[styles.dangerTitle, { color: colors.error }]}>
+            Danger Zone
+          </Text>
         </View>
-        <Text style={[styles.dangerDescription, { color: colors.textSecondary }]}>
+        <Text
+          style={[styles.dangerDescription, { color: colors.textSecondary }]}
+        >
           데이터베이스에 저장된 모든 할 일 데이터를 영구적으로 삭제합니다.
         </Text>
 
@@ -196,7 +261,7 @@ const SettingsScreen = () => {
           activeOpacity={0.8}
         >
           <Trash2 size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
-          <Text style={styles.dangerButtonText}>모든 데이터 비우기</Text>
+          <Text style={styles.dangerButtonText}>Clear All Data</Text>
         </TouchableOpacity>
       </View>
     </View>
